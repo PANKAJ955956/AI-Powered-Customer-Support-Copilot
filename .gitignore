@@ -216,3 +216,10 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Custom Rules
+*.db
+chroma_db/
+temp_uploads/
+node_modules/
+.env.*

@@ -1,0 +1,1763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Powered Customer Support Copilot</title>
+  <style>
+    /* Premium Self-Contained Dark Mode CSS */
+    :root {
+      --bg-color: #050811;
+      --panel-bg: rgba(13, 20, 38, 0.8);
+      --card-bg: #0d1326;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --primary-color: #6366f1;
+      --primary-hover: #4f46e5;
+      --success-color: #10b981;
+      --success-bg: rgba(16, 185, 129, 0.15);
+      --error-color: #ef4444;
+      --error-bg: rgba(239, 68, 68, 0.15);
+      --warning-color: #f59e0b;
+      --warning-bg: rgba(245, 158, 11, 0.15);
+      --text-primary: #f3f4f6;
+      --text-secondary: #9ca3af;
+      --font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      font-family: var(--font-family);
+      min-height: 100-vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    input, select, textarea {
+      font-family: var(--font-family);
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.1);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.15);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    /* Login Screen Layout */
+    #login-section {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: radial-gradient(circle at center, #0f162e 0%, var(--bg-color) 70%);
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--panel-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 40px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 40px rgba(99, 102, 241, 0.1);
+      text-align: center;
+    }
+
+    .login-icon-container {
+      width: 60px;
+      height: 60px;
+      background: var(--primary-color);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      box-shadow: 0 8px 16px rgba(99, 102, 241, 0.3);
+    }
+
+    .login-card h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .login-card p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: rgba(5, 8, 17, 0.8);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: var(--text-primary);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--primary-color);
+      border: none;
+      border-radius: 10px;
+      padding: 14px;
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+    }
+
+    .btn-submit:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-submit:active {
+      transform: scale(0.98);
+    }
+
+    #login-error {
+      background: var(--error-bg);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: var(--error-color);
+      font-size: 13px;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      text-align: left;
+      display: none;
+    }
+
+    .login-credentials-tip {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 24px;
+      line-height: 1.5;
+    }
+
+    /* Main Application Viewports */
+    #app-section {
+      display: flex;
+      flex: 1;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .app-sidebar {
+      width: 260px;
+      border-right: 1px solid var(--border-color);
+      background: #080b15;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+
+    .sidebar-logo {
+      width: 38px;
+      height: 38px;
+      background: var(--primary-color);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sidebar-brand h2 {
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .sidebar-brand span {
+      font-size: 10px;
+      color: var(--primary-color);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .sidebar-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .sidebar-menu-btn {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+    }
+
+    .sidebar-menu-btn svg {
+      stroke: var(--text-secondary);
+      transition: stroke 0.2s;
+    }
+
+    .sidebar-menu-btn:hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-primary);
+    }
+
+    .sidebar-menu-btn:hover svg {
+      stroke: var(--text-primary);
+    }
+
+    .sidebar-menu-btn.active {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .sidebar-menu-btn.active svg {
+      stroke: white;
+    }
+
+    .sidebar-footer {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .sidebar-profile {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 13px;
+    }
+
+    .sidebar-profile p:first-child {
+      color: var(--text-secondary);
+      font-size: 11px;
+    }
+
+    .sidebar-profile p:nth-child(2) {
+      font-weight: 600;
+      margin: 2px 0 8px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .role-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      background: var(--success-bg);
+      color: var(--success-color);
+      font-size: 10px;
+      font-weight: 700;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .btn-logout {
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 12px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-logout:hover {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.2);
+      color: var(--error-color);
+    }
+
+    /* Main Area Container */
+    .app-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .main-header {
+      height: 70px;
+      border-bottom: 1px solid var(--border-color);
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(8, 11, 21, 0.4);
+    }
+
+    .main-header h2 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .sync-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.15);
+      border-radius: 20px;
+      color: var(--success-color);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .sync-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 55%;
+      background-color: var(--success-color);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.4; }
+      50% { opacity: 1; }
+      100% { opacity: 0.4; }
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 32px;
+      overflow-y: auto;
+    }
+
+    .tab-pane {
+      display: none;
+      height: 100%;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    /* Workspace Grid Layout */
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 340px 1fr 300px;
+      gap: 24px;
+      height: 100%;
+      align-items: start;
+    }
+
+    .workspace-col {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      height: 100%;
+    }
+
+    .section-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .custom-select {
+      width: 100%;
+      background: #050811;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: var(--text-primary);
+      font-size: 14px;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      background-size: 16px;
+      padding-right: 40px;
+      transition: border-color 0.2s;
+    }
+
+    .custom-select:focus {
+      border-color: var(--primary-color);
+    }
+
+    .profile-details {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-t: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 13px;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .detail-label {
+      color: var(--text-secondary);
+    }
+
+    .detail-value {
+      font-weight: 600;
+    }
+
+    .badge-tier {
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      background-color: rgba(99, 102, 241, 0.15);
+      color: var(--primary-color);
+      text-transform: uppercase;
+    }
+
+    .badge-status {
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .badge-status.paid {
+      background-color: var(--success-bg);
+      color: var(--success-color);
+    }
+
+    .badge-status.unpaid, .badge-status.overdue {
+      background-color: var(--error-bg);
+      color: var(--error-color);
+    }
+
+    /* Memory / Timeline Lists */
+    .scroll-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow-y: auto;
+      max-height: 240px;
+      padding-right: 4px;
+    }
+
+    .memory-item {
+      background: #050811;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #e5e7eb;
+    }
+
+    .order-item {
+      border-left: 3px solid var(--primary-color);
+      background: #050811;
+      padding: 12px;
+      border-radius: 0 10px 10px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+    }
+
+    .order-info p:first-child {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .order-info p:last-child {
+      font-size: 10px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .order-price {
+      text-align: right;
+    }
+
+    .order-price p:first-child {
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+
+    .order-price p:last-child {
+      font-size: 10px;
+      color: var(--text-secondary);
+      text-transform: capitalize;
+    }
+
+    /* Center Pane Controls */
+    .textarea-container {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .custom-textarea {
+      width: 100%;
+      flex: 1;
+      min-height: 180px;
+      background: #050811;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      color: var(--text-primary);
+      font-size: 14px;
+      line-height: 1.5;
+      outline: none;
+      resize: none;
+      transition: border-color 0.2s;
+      margin: 8px 0 16px;
+    }
+
+    .custom-textarea:focus {
+      border-color: var(--primary-color);
+    }
+
+    .btn-run {
+      width: 100%;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.25);
+      transition: all 0.2s;
+    }
+
+    .btn-run:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-run:active {
+      transform: scale(0.98);
+    }
+
+    .btn-run:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Suggested Reply Card */
+    .reply-card {
+      margin-top: 24px;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      background: var(--panel-bg);
+      padding: 24px;
+    }
+
+    .reply-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+
+    .reply-meta-title {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .reply-meta-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 4px;
+      align-items: center;
+    }
+
+    .reply-category-tag {
+      padding: 2px 8px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .reply-confidence {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .reply-confidence strong {
+      color: var(--success-color);
+    }
+
+    .reply-badge-escalate {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 6px;
+    }
+
+    .reply-badge-escalate.yes {
+      background: var(--warning-bg);
+      color: var(--warning-color);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .reply-badge-escalate.no {
+      background: var(--success-bg);
+      color: var(--success-color);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .reply-content-box {
+      background: #050811;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      padding: 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #e5e7eb;
+      max-height: 180px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    .reply-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .btn-action-outline {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-action-outline:hover {
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    /* RAG Right Pane */
+    .rag-snippets-scroll {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      overflow-y: auto;
+      flex: 1;
+      padding-right: 4px;
+    }
+
+    .rag-card {
+      background: #050811;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .rag-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .rag-text {
+      color: #d1d5db;
+    }
+
+    /* Analytics Tab Views */
+    .metrics-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .metric-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .metric-card p {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .metric-card h2 {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .charts-split-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .chart-container-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      min-height: 360px;
+    }
+
+    .chart-container-card h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 24px;
+    }
+
+    /* Offline Custom SVG Chart Layouts */
+    .svg-chart-wrapper {
+      width: 100%;
+      height: 240px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Table View for Logs */
+    .table-container {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .audit-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    .audit-table th {
+      background: rgba(0,0,0,0.2);
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 24px;
+      color: var(--text-secondary);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+
+    .audit-table td {
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      padding: 16px 24px;
+      color: #e5e7eb;
+    }
+
+    .audit-table tr:hover {
+      background: rgba(255,255,255,0.01);
+    }
+
+    .log-timestamp {
+      color: var(--text-secondary);
+      font-family: monospace;
+      white-space: nowrap;
+    }
+
+    .log-action {
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+
+    /* Ingestion File Upload Zone */
+    .upload-zone-wrapper {
+      max-width: 600px;
+      margin: 40px auto;
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+    }
+
+    .upload-title-icon {
+      width: 50px;
+      height: 50px;
+      background: rgba(99, 102, 241, 0.08);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      color: var(--primary-color);
+    }
+
+    .upload-zone-wrapper h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .upload-zone-wrapper p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+    }
+
+    .file-drop-area {
+      border: 2px dashed rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 32px;
+      background: rgba(5, 8, 17, 0.4);
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s;
+    }
+
+    .file-drop-area:hover {
+      border-color: var(--primary-color);
+      background: rgba(5, 8, 17, 0.6);
+    }
+
+    .file-drop-area input {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .drop-message {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .drop-message.active {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    .btn-upload {
+      margin-top: 20px;
+      width: 100%;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-upload:hover {
+      background: var(--primary-hover);
+    }
+
+    #upload-status {
+      margin-top: 16px;
+      background: #050811;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 12px;
+      font-family: monospace;
+      color: var(--text-secondary);
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. LOGIN SECTION -->
+  <div id="login-section">
+    <div class="login-card">
+      <div class="login-icon-container">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <h1>Copilot Agent Portal</h1>
+      <p>Sign in to retrieve customer context and generate replies</p>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label>Agent Email Address</label>
+          <input type="email" id="login-email" placeholder="agent@copilot.com" required class="form-input">
+        </div>
+        
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-password" placeholder="••••••••" required class="form-input">
+        </div>
+
+        <div id="login-error"></div>
+
+        <button type="submit" class="btn-submit">
+          Access Workspace
+        </button>
+      </form>
+
+      <div class="login-credentials-tip">
+        Demo Access Credentials: <br>
+        <span style="color: #818cf8; font-family: monospace;">agent@copilot.com / agent123</span><br>
+        <span style="color: #818cf8; font-family: monospace;">admin@copilot.com / admin123</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. MAIN APP FRAMEWORK -->
+  <div id="app-section" style="display: none;">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="app-sidebar">
+      <div style="display: flex; flex-direction: column; gap: 40px;">
+        <div class="sidebar-header">
+          <div class="sidebar-logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 1 8 4 10 10 0 0 1 2 8h-2a8 8 0 0 0-8-8V2z"/><path d="M12 22a10 10 0 0 1-8-4 10 10 0 0 1-2-8h2a8 8 0 0 0 8 8v2z"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <div class="sidebar-brand">
+            <h2>Copilot CRM</h2>
+            <span>Enterprise AI</span>
+          </div>
+        </div>
+
+        <nav class="sidebar-menu">
+          <button onclick="switchTab('copilot')" id="tab-btn-copilot" class="sidebar-menu-btn active">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Workspace
+          </button>
+          
+          <button onclick="switchTab('analytics')" id="tab-btn-analytics" class="sidebar-menu-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            Analytics
+          </button>
+          
+          <button onclick="switchTab('knowledge')" id="tab-btn-knowledge" class="sidebar-menu-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Ingest FAQs
+          </button>
+          
+          <button onclick="switchTab('logs')" id="tab-btn-logs" class="sidebar-menu-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Audit Logs
+          </button>
+        </nav>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-profile">
+          <p>Logged in as:</p>
+          <p id="agent-email-display">agent@copilot.com</p>
+          <span id="agent-role-badge" class="role-badge">Agent</span>
+        </div>
+        
+        <button onclick="handleLogout()" class="btn-logout">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Log Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Panel -->
+    <div class="app-main">
+      <header class="main-header">
+        <h2 id="current-title">AI Customer Support Copilot</h2>
+        <div class="sync-status">
+          <span class="sync-dot"></span>
+          LangGraph Flow Synchronized
+        </div>
+      </header>
+
+      <div class="main-content">
+
+        <!-- TAB: COPILOT WORKSPACE -->
+        <div id="pane-copilot" class="tab-pane active">
+          <div class="workspace-grid">
+            
+            <!-- Left: Customer Profile Timeline -->
+            <div class="workspace-col">
+              <div class="section-card">
+                <div class="section-title">
+                  <span>Customer Directory</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                
+                <select id="customer-dropdown" onchange="onCustomerSelected()" class="custom-select">
+                  <!-- Loaded dynamically -->
+                </select>
+
+                <div id="profile-container" class="profile-details" style="display: none;">
+                  <div class="detail-row">
+                    <span class="detail-label">Email:</span>
+                    <span id="cust-email" class="detail-value"></span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Phone:</span>
+                    <span id="cust-phone" class="detail-value"></span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Plan Tier:</span>
+                    <span id="cust-plan" class="badge-tier"></span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Billing:</span>
+                    <span id="cust-billing" class="badge-status"></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Persistent Memory Timeline -->
+              <div class="section-card" style="flex: 1; min-height: 180px; display: flex; flex-direction: column;">
+                <div class="section-title">
+                  <span>Memory Timeline (Mem0)</span>
+                  <button onclick="clearCustomerMemory()" style="background: none; border: none; cursor: pointer; color: var(--text-secondary);"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
+                </div>
+                <div id="memory-list" class="scroll-list">
+                  <!-- Loaded dynamically -->
+                </div>
+              </div>
+
+              <!-- Customer Orders -->
+              <div class="section-card">
+                <div class="section-title">
+                  <span>Orders Log</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                </div>
+                <div id="order-list" class="scroll-list" style="max-height: 160px;">
+                  <!-- Loaded dynamically -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Center: Query Copilot & Reply -->
+            <div class="workspace-col" style="gap: 24px;">
+              <div class="section-card textarea-container">
+                <div class="section-title">
+                  <span>Describe Support Issue</span>
+                </div>
+                <textarea id="copilot-query-input" placeholder="Enter customer query or complaint text here... E.g. Client needs a refund for double charge." class="custom-textarea"></textarea>
+                
+                <button onclick="runCopilotFlow()" id="run-copilot-btn" class="btn-run">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  Analyze & Generate Draft
+                </button>
+              </div>
+
+              <!-- Suggested Response Card -->
+              <div id="suggested-reply-card" class="reply-card" style="display: none;">
+                <div class="reply-header">
+                  <div>
+                    <span class="reply-meta-title">AI Proposed Draft Reply</span>
+                    <div class="reply-meta-row">
+                      <span id="reply-category" class="reply-category-tag"></span>
+                      <span class="reply-confidence">Confidence: <strong id="reply-confidence"></strong></span>
+                    </div>
+                  </div>
+                  <span id="reply-escalate-badge" class="reply-badge-escalate"></span>
+                </div>
+                
+                <div id="reply-text" class="reply-content-box"></div>
+                
+                <div class="reply-actions">
+                  <button onclick="copyReplyToClipboard()" class="btn-action-outline">Copy Proposed Text</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Knowledge base search snippets -->
+            <div class="workspace-col" style="height: 100%;">
+              <div class="section-card" style="height: 100%; display: flex; flex-direction: column;">
+                <div class="section-title">
+                  <span>Policy Matches (RAG)</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                </div>
+                <div id="rag-snippets-container" class="rag-snippets-scroll">
+                  <!-- Loaded dynamically -->
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- TAB: ANALYTICS -->
+        <div id="pane-analytics" class="tab-pane">
+          
+          <div class="metrics-summary-grid">
+            <div class="metric-card">
+              <p>Average Handling Time</p>
+              <h2 id="metric-aht" style="color: #818cf8;">-</h2>
+            </div>
+            <div class="metric-card">
+              <p>CSAT Rating</p>
+              <h2 id="metric-csat" style="color: #34d399;">-</h2>
+            </div>
+            <div class="metric-card">
+              <p>Resolution Rate</p>
+              <h2 id="metric-resolution" style="color: #60a5fa;">-</h2>
+            </div>
+            <div class="metric-card">
+              <p>Total AI Actions</p>
+              <h2 id="metric-total" style="color: #a78bfa;">-</h2>
+            </div>
+          </div>
+
+          <div class="charts-split-grid">
+            <div class="chart-container-card">
+              <h3>Sentiment Trends</h3>
+              <div class="svg-chart-wrapper">
+                <svg id="sentiment-svg-chart" width="220" height="220" viewBox="0 0 36 36"></svg>
+              </div>
+            </div>
+            <div class="chart-container-card">
+              <h3>Issue Categories Volume</h3>
+              <div class="svg-chart-wrapper">
+                <svg id="category-svg-chart" width="360" height="220"></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: UPLOAD FAQ -->
+        <div id="pane-knowledge" class="tab-pane">
+          <div class="upload-zone-wrapper">
+            <div class="upload-title-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+            <h2>Ingest Company Policies PDF</h2>
+            <p>PDF guidelines are chunked recursively and embedded inside ChromaDB for similarity matches.</p>
+
+            <form id="upload-form">
+              <div class="file-drop-area">
+                <input type="file" id="pdf-file-input" accept=".pdf" required>
+                <div id="file-label" class="drop-message">
+                  Click here or drag and drop support document PDF file
+                </div>
+              </div>
+
+              <button type="submit" class="btn-upload">Injest PDF into ChromaDB</button>
+            </form>
+
+            <div id="upload-status"></div>
+          </div>
+        </div>
+
+        <!-- TAB: AUDIT LOGS -->
+        <div id="pane-logs" class="tab-pane">
+          <div class="table-container">
+            <table class="audit-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Security Action</th>
+                  <th>Details</th>
+                </tr>
+              </thead>
+              <tbody id="logs-table-body">
+                <!-- Loaded dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let token = null;
+    let currentTab = 'copilot';
+    let customerList = [];
+    let currentCustomer = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedToken = localStorage.getItem('copilot_token');
+      if (savedToken) {
+        token = savedToken;
+        showApp();
+      }
+    });
+
+    // Login logic
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      const errorDiv = document.getElementById('login-error');
+      
+      errorDiv.style.display = 'none';
+      
+      try {
+        const formData = new FormData();
+        formData.append('username', email);
+        formData.append('password', password);
+        
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          body: formData
+        });
+        
+        if (!res.ok) throw new Error('Unauthorized credentials. Check spelling.');
+        
+        const data = await res.json();
+        token = data.access_token;
+        localStorage.setItem('copilot_token', token);
+        
+        document.getElementById('agent-email-display').innerText = data.user.email;
+        document.getElementById('agent-role-badge').innerText = data.user.role;
+        
+        showApp();
+      } catch (err) {
+        errorDiv.innerText = err.message;
+        errorDiv.style.display = 'block';
+      }
+    });
+
+    function handleLogout() {
+      token = null;
+      localStorage.removeItem('copilot_token');
+      document.getElementById('app-section').style.display = 'none';
+      document.getElementById('login-section').style.display = 'flex';
+    }
+
+    function showApp() {
+      document.getElementById('login-section').style.display = 'none';
+      document.getElementById('app-section').style.display = 'flex';
+      
+      loadCustomers();
+      loadAnalytics();
+      loadLogs();
+    }
+
+    // Tabs router
+    function switchTab(tabName) {
+      currentTab = tabName;
+      document.querySelectorAll('.sidebar-menu-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.getElementById(`tab-btn-${tabName}`).classList.add('active');
+      
+      document.querySelectorAll('.tab-pane').forEach(pane => {
+        pane.classList.remove('active');
+      });
+      document.getElementById(`pane-${tabName}`).classList.add('active');
+      
+      document.getElementById('current-title').innerText = 
+        tabName === 'copilot' ? 'AI Customer Support Copilot' : 
+        tabName === 'analytics' ? 'Performance Metrics & Insights' : 
+        tabName === 'knowledge' ? 'FAQ Knowledge Base Administration' : 'Security Log Audit Trail';
+        
+      if (tabName === 'analytics') {
+        loadAnalytics();
+      } else if (tabName === 'logs') {
+        loadLogs();
+      }
+    }
+
+    // Load Customers API
+    async function loadCustomers() {
+      try {
+        const res = await fetch('/api/customers', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+          customerList = await res.json();
+          const dropdown = document.getElementById('customer-dropdown');
+          dropdown.innerHTML = '';
+          
+          customerList.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c.id;
+            opt.innerText = `${c.name} (${c.subscription_plan})`;
+            dropdown.appendChild(opt);
+          });
+          
+          if (customerList.length > 0) {
+            onCustomerSelected();
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load customer profiles:", err);
+      }
+    }
+
+    // Selection details
+    async function onCustomerSelected() {
+      const custId = document.getElementById('customer-dropdown').value;
+      if (!custId) return;
+      
+      try {
+        const res = await fetch(`/api/customers/${custId}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const details = await res.json();
+          currentCustomer = details;
+          
+          document.getElementById('profile-container').style.display = 'flex';
+          document.getElementById('cust-email').innerText = details.customer.email;
+          document.getElementById('cust-phone').innerText = details.customer.phone;
+          document.getElementById('cust-plan').innerText = details.customer.subscription_plan;
+          
+          const billing = document.getElementById('cust-billing');
+          billing.innerText = details.customer.billing_status;
+          billing.className = `badge-status ${details.customer.billing_status.toLowerCase()}`;
+          
+          renderMemories(details.memories);
+          renderOrders(details.orders);
+        }
+      } catch (err) {
+        console.error("Failed to fetch customer profile:", err);
+      }
+    }
+
+    function renderMemories(memories) {
+      const list = document.getElementById('memory-list');
+      list.innerHTML = '';
+      if (memories.length === 0) {
+        list.innerHTML = `<p class="memory-item" style="color: var(--text-secondary); text-align: center; border: none; background: transparent;">No preferences recorded.</p>`;
+        return;
+      }
+      memories.forEach(m => {
+        const li = document.createElement('div');
+        li.className = 'memory-item';
+        li.innerText = m;
+        list.appendChild(li);
+      });
+    }
+
+    function renderOrders(orders) {
+      const list = document.getElementById('order-list');
+      list.innerHTML = '';
+      if (orders.length === 0) {
+        list.innerHTML = `<p class="memory-item" style="color: var(--text-secondary); text-align: center; border: none; background: transparent;">No order events.</p>`;
+        return;
+      }
+      orders.forEach(o => {
+        const item = document.createElement('div');
+        item.className = 'order-item';
+        item.innerHTML = `
+          <div class="order-info">
+            <p>${o.product_name}</p>
+            <p>${new Date(o.created_at).toLocaleDateString()}</p>
+          </div>
+          <div class="order-price">
+            <p>$${o.price}</p>
+            <p>${o.status}</p>
+          </div>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    // Run agentic pipeline
+    async function runCopilotFlow() {
+      const custId = document.getElementById('customer-dropdown').value;
+      const query = document.getElementById('copilot-query-input').value;
+      const btn = document.getElementById('run-copilot-btn');
+      
+      if (!query.trim()) return;
+      
+      btn.disabled = true;
+      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sync-dot" style="margin-right: 8px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg> Executing Agent Graph...`;
+      
+      try {
+        const formData = new FormData();
+        formData.append('customer_id', custId);
+        formData.append('query', query);
+        
+        const res = await fetch('/api/copilot/query', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: formData
+        });
+        
+        if (res.ok) {
+          const data = await res.json();
+          
+          document.getElementById('suggested-reply-card').style.display = 'block';
+          document.getElementById('reply-text').innerText = data.suggested_reply;
+          document.getElementById('reply-category').innerText = data.category;
+          document.getElementById('reply-confidence').innerText = `${Math.round(data.confidence_score * 100)}%`;
+          
+          const esc = document.getElementById('reply-escalate-badge');
+          if (data.escalate) {
+            esc.innerText = "Escalation Flagged";
+            esc.className = "reply-badge-escalate yes";
+          } else {
+            esc.innerText = "Auto-Resolve Match";
+            esc.className = "reply-badge-escalate no";
+          }
+          
+          // RAG items
+          const container = document.getElementById('rag-snippets-container');
+          container.innerHTML = '';
+          if (data.retrieved_kb && data.retrieved_kb.length > 0) {
+            data.retrieved_kb.forEach((snippet, idx) => {
+              const div = document.createElement('div');
+              div.className = 'rag-card';
+              div.innerHTML = `
+                <div class="rag-meta">
+                  <span>Match #${idx + 1}</span>
+                  <span>Document Link</span>
+                </div>
+                <p class="rag-text">${snippet}</p>
+              `;
+              container.appendChild(div);
+            });
+          } else {
+            container.innerHTML = `<p class="memory-item" style="color: var(--text-secondary); text-align: center; border: none; background: transparent;">No policy files loaded.</p>`;
+          }
+          
+          // Sync memories
+          renderMemories(data.memories);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg> Analyze & Generate Draft`;
+      }
+    }
+
+    async function clearCustomerMemory() {
+      const custId = document.getElementById('customer-dropdown').value;
+      if (!custId) return;
+      
+      if (confirm("Clear memory timelines for this profile?")) {
+        try {
+          const res = await fetch(`/api/copilot/memories/${custId}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          if (res.ok) {
+            onCustomerSelected();
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+
+    function copyReplyToClipboard() {
+      const txt = document.getElementById('reply-text').innerText;
+      navigator.clipboard.writeText(txt);
+      alert("Proposed response text copied to clipboard!");
+    }
+
+    // Ingest events
+    document.getElementById('pdf-file-input').addEventListener('change', (e) => {
+      const label = document.getElementById('file-label');
+      if (e.target.files.length > 0) {
+        label.innerText = `Selected File: ${e.target.files[0].name}`;
+        label.classList.add('active');
+      }
+    });
+
+    document.getElementById('upload-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fileInput = document.getElementById('pdf-file-input');
+      const statusDiv = document.getElementById('upload-status');
+      
+      if (fileInput.files.length === 0) return;
+      
+      statusDiv.innerText = "Uploading PDF document and generating vector embeddings...";
+      statusDiv.style.display = 'block';
+      
+      const formData = new FormData();
+      formData.append('file', fileInput.files[0]);
+      
+      try {
+        const res = await fetch('/api/copilot/upload', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: formData
+        });
+        
+        if (res.ok) {
+          const data = await res.json();
+          statusDiv.innerText = `Success! Parsed ${data.chunks_ingested} text blocks from ${data.filename}`;
+          fileInput.value = '';
+          const label = document.getElementById('file-label');
+          label.innerText = "Click here or drag and drop support document PDF file";
+          label.classList.remove('active');
+        } else {
+          const err = await res.json();
+          statusDiv.innerText = `Error: ${err.detail || 'Ingestion script failed'}`;
+        }
+      } catch (err) {
+        statusDiv.innerText = `API network issue: ${err.message}`;
+      }
+    });
+
+    // Logs query
+    async function loadLogs() {
+      try {
+        const res = await fetch('/api/logs', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const tbody = document.getElementById('logs-table-body');
+          tbody.innerHTML = '';
+          
+          data.forEach(log => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td class="log-timestamp">${new Date(log.timestamp).toLocaleString()}</td>
+              <td class="log-action">${log.action}</td>
+              <td>${log.details}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    // Analytics calculations & Offline Charts SVG rendering
+    async function loadAnalytics() {
+      try {
+        const res = await fetch('/api/analytics/dashboard', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          
+          document.getElementById('metric-aht').innerText = `${data.avg_handling_time_sec}s`;
+          document.getElementById('metric-csat').innerText = `${data.csat_score} / 5.0`;
+          document.getElementById('metric-resolution').innerText = `${data.resolution_rate}%`;
+          
+          const totalVal = Object.values(data.top_categories).reduce((a, b) => a + b, 0);
+          document.getElementById('metric-total').innerText = totalVal;
+
+          renderOfflineSentimentChart(data.sentiment_trends);
+          renderOfflineCategoryChart(data.top_categories);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    // Custom offline SVG Doughnut chart
+    function renderOfflineSentimentChart(trends) {
+      const svg = document.getElementById('sentiment-svg-chart');
+      svg.innerHTML = '';
+      
+      const total = Object.values(trends).reduce((a,b)=>a+b, 0);
+      if (total === 0) {
+        svg.innerHTML = `<text x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="%239ca3af" font-size="12">No data</text>`;
+        return;
+      }
+
+      const colors = {
+        'Positive': '#10b981',
+        'Neutral': '#64748b',
+        'Negative': '#ef4444'
+      };
+
+      let accumulatedPercent = 0;
+      let slices = [];
+
+      Object.entries(trends).forEach(([name, val]) => {
+        const pct = (val / total) * 100;
+        slices.push({
+          name: name,
+          val: val,
+          percent: pct,
+          color: colors[name] || '#ccc'
+        });
+      });
+
+      // Simple SVG rendering
+      let cumulativeAngle = 0;
+      slices.forEach((slice) => {
+        if (slice.percent === 0) return;
+        
+        // Single circle if 100%
+        if (slice.percent === 100) {
+          svg.innerHTML += `<circle cx="18" cy="18" r="15.915" fill="none" stroke="${slice.color}" stroke-width="4"></circle>`;
+          return;
+        }
+
+        const strokeDasharray = `${slice.percent} ${100 - slice.percent}`;
+        const offset = 100 - cumulativeAngle + 25; // Offset by 25 to start at top (12 o'clock)
+        
+        svg.innerHTML += `
+          <circle cx="18" cy="18" r="15.915" fill="none" 
+                  stroke="${slice.color}" stroke-width="4" 
+                  stroke-dasharray="${strokeDasharray}" 
+                  stroke-dashoffset="${offset}"
+                  class="chart-slice">
+          </circle>
+        `;
+        cumulativeAngle += slice.percent;
+      });
+
+      // Add center text
+      svg.innerHTML += `
+        <circle cx="18" cy="18" r="11" fill="#0d1326"></circle>
+        <text x="18" y="19.5" text-anchor="middle" font-size="2.5" fill="#f3f4f6" font-weight="bold">CSAT Breakdown</text>
+      `;
+    }
+
+    // Custom offline SVG Bar chart
+    function renderOfflineCategoryChart(categories) {
+      const svg = document.getElementById('category-svg-chart');
+      svg.innerHTML = '';
+
+      const keys = Object.keys(categories);
+      const vals = Object.values(categories);
+      const maxVal = Math.max(...vals, 1);
+      
+      if (keys.length === 0) {
+        svg.innerHTML = `<text x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="%239ca3af" font-size="12">No data</text>`;
+        return;
+      }
+
+      const svgWidth = 360;
+      const svgHeight = 220;
+      const paddingLeft = 60;
+      const paddingBottom = 40;
+      const barAreaHeight = svgHeight - paddingBottom - 20;
+      const barAreaWidth = svgWidth - paddingLeft - 20;
+
+      const barWidth = Math.floor(barAreaWidth / keys.length) - 16;
+      
+      // Draw Axes
+      svg.innerHTML += `
+        <line x1="${paddingLeft}" y1="20" x2="${paddingLeft}" y2="${svgHeight - paddingBottom}" stroke="rgba(255,255,255,0.1)" stroke-width="1" />
+        <line x1="${paddingLeft}" y1="${svgHeight - paddingBottom}" x2="${svgWidth - 20}" y2="${svgHeight - paddingBottom}" stroke="rgba(255,255,255,0.1)" stroke-width="1" />
+      `;
+
+      keys.forEach((key, idx) => {
+        const val = categories[key];
+        const barHeight = Math.floor((val / maxVal) * barAreaHeight);
+        const x = paddingLeft + 16 + idx * (barWidth + 16);
+        const y = svgHeight - paddingBottom - barHeight;
+
+        // Draw bar
+        svg.innerHTML += `
+          <rect x="${x}" y="${y}" width="${barWidth}" height="${barHeight}" fill="#6366f1" rx="4" />
+          <text x="${x + barWidth/2}" y="${y - 8}" text-anchor="middle" font-size="10" fill="#f3f4f6" font-weight="bold">${val}</text>
+          <text x="${x + barWidth/2}" y="${svgHeight - paddingBottom + 18}" text-anchor="middle" font-size="9" fill="#9ca3af">${key}</text>
+        `;
+      });
+    }
+  </script>
+</body>
+</html>

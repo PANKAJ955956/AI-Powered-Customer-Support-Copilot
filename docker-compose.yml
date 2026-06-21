@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: copilot_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: copilot_user
+      POSTGRES_PASSWORD: copilot_password_9876
+      POSTGRES_DB: copilot_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: copilot_backend
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://copilot_user:copilot_password_9876@postgres:5432/copilot_db
+      - JWT_SECRET=production-secret-should-be-random-generated-string
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - MEM0_API_KEY=${MEM0_API_KEY}
+      - ENVIRONMENT=production
+    depends_on:
+      - postgres
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: copilot_frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:

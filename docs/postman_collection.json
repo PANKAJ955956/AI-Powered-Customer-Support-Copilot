@@ -1,0 +1,199 @@
+{
+  "info": {
+    "_postman_id": "a67123d2-d85c-42b7-a3bb-a4e930cd2e51",
+    "name": "AI Customer Support Copilot API Collection",
+    "description": "API collection for testing authentication, customer information retrieval, RAG ingestion, memory operations, and agent execution in the Copilot CRM app.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "User Registration",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "email", "value": "agent_new@copilot.com", "type": "text" },
+                { "key": "password", "value": "agentPassword123", "type": "text" },
+                { "key": "role", "value": "Agent", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/auth/register",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "User Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "username", "value": "agent@copilot.com", "type": "text" },
+                { "key": "password", "value": "agent123", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/auth/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "List All Customers",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}", "type": "text" }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/customers",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "customers"]
+            }
+          }
+        },
+        {
+          "name": "Get Customer Complete Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}", "type": "text" }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/customers/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "customers", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Copilot & Memory",
+      "item": [
+        {
+          "name": "Query Copilot LangGraph",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}", "type": "text" }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "customer_id", "value": "1", "type": "text" },
+                { "key": "query", "value": "Alice Johnson has a question regarding double billing charging.", "type": "text" }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/copilot/query",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "copilot", "query"]
+            }
+          }
+        },
+        {
+          "name": "Get Customer Memory Timeline",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}", "type": "text" }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/copilot/memories/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "copilot", "memories", "1"]
+            }
+          }
+        },
+        {
+          "name": "Clear Customer Memories",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}", "type": "text" }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/copilot/memories/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "copilot", "memories", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analytics & Monitoring",
+      "item": [
+        {
+          "name": "Get Analytics metrics",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}", "type": "text" }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/analytics/dashboard",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "analytics", "dashboard"]
+            }
+          }
+        },
+        {
+          "name": "Get System logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}", "type": "text" }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/logs",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8000",
+              "path": ["api", "logs"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "access_token",
+      "value": "your_access_token_token_here",
+      "type": "string"
+    }
+  ]
+}
